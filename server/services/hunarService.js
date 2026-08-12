@@ -341,15 +341,23 @@ class HunarService {
   async createCall(data) {
     if (this.isLive) {
       try {
+        console.log('[Hunar] Creating call:', JSON.stringify(data, null, 2));
         const res = await fetch(`${HUNAR_BASE_URL}/calls/`, {
           method: 'POST',
           headers: this.getHeaders(),
           body: JSON.stringify(data)
         });
         const body = await res.json();
-        if (res.ok) return { success: true, data: body };
-        return { success: false, error: body };
-      } catch { this.isLive = false; }
+        if (res.ok) {
+          console.log('[Hunar] Call created successfully:', body.id || body.call_id);
+          return { success: true, data: body };
+        }
+        console.error('[Hunar] Call creation failed:', res.status, JSON.stringify(body));
+        return { success: false, error: body, message: body.detail || body.message || `API returned ${res.status}` };
+      } catch (err) {
+        console.error('[Hunar] Call creation error:', err.message);
+        this.isLive = false;
+      }
     }
     // Sandbox
     const callId = uuidv4();

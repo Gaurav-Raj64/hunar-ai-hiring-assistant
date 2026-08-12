@@ -33,6 +33,20 @@ export default function LiveCallDemo() {
     setCallData(null)
     setLiveStatus('INITIATING')
 
+    const now = new Date()
+    const hour = now.getHours()
+    const isOutsideHours = hour >= 21 || hour < 8
+
+    if (isOutsideHours) {
+      setCallStatus('error')
+      setStatusHistory([{
+        time: now.toLocaleTimeString(),
+        status: 'BLOCKED',
+        text: `⏰ Hunar Voice AI only allows calls between 8:00 AM - 9:00 PM IST. Current time: ${now.toLocaleTimeString()}. Try again tomorrow morning!`
+      }])
+      return
+    }
+
     const res = await api.createCall({
       agent_id: selectedAgent,
       callee_name: name,
@@ -45,8 +59,8 @@ export default function LiveCallDemo() {
         salary_range: '18-25 LPA'
       },
       guardrails: {
-        earliest_call_time: '00:00',
-        last_call_time: '23:59',
+        earliest_call_time: '08:00',
+        last_call_time: '21:00',
         allowed_days: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
       }
     })
@@ -101,10 +115,11 @@ export default function LiveCallDemo() {
       }
     } else {
       setCallStatus('error')
+      const errMsg = res.message || res.error?.message || res.error?.detail || 'Unknown error'
       setStatusHistory(prev => [...prev, {
         time: new Date().toLocaleTimeString(),
         status: 'ERROR',
-        text: `Failed: ${res.message || 'Unknown error'}`
+        text: `Failed: ${errMsg}`
       }])
     }
   }
@@ -127,7 +142,7 @@ export default function LiveCallDemo() {
   function getStatusColor(status) {
     if (['COMPLETED'].includes(status)) return 'var(--green)'
     if (['IN_PROGRESS', 'RINGING'].includes(status)) return 'var(--yellow)'
-    if (['FAILED', 'NOT_CONNECTED', 'CANCELLED', 'ERROR'].includes(status)) return 'var(--red)'
+    if (['FAILED', 'NOT_CONNECTED', 'CANCELLED', 'ERROR', 'BLOCKED'].includes(status)) return 'var(--red)'
     return 'var(--accent-secondary)'
   }
 
