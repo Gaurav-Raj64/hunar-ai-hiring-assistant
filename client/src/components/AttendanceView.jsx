@@ -170,39 +170,117 @@ function WorkflowSection() {
     <div className="card whitepaper">
       <h2>🔄 Daily Attendance Workflow</h2>
 
-      <div className="diagram-box">{`
-   EMPLOYEE                    SYSTEM                         HR DASHBOARD
-      │                          │                                │
-      │  ☎️ Dials toll-free       │                                │
-      │  number at 8:45 AM       │                                │
-      │─────────────────────────▶│                                │
-      │                          │  1. Caller ID lookup            │
-      │                          │  2. "Namaste Ravi! Kya aap      │
-      │                          │     Koramangala mein hain?"      │
-      │                          │◀────────────────────────────────│
-      │  "Haan, main yahan hoon" │                                │
-      │─────────────────────────▶│                                │
-      │                          │  3. Voice biometric match ✓     │
-      │                          │  4. Mark PRESENT at 8:45 AM     │
-      │                          │  5. "Dhanyavaad Ravi!            │
-      │                          │     Aapki attendance ho gayi."   │
-      │◀─────────────────────────│                                │
-      │                          │  6. Update dashboard ───────────▶│  ✅ Ravi - PRESENT
-      │                          │                                │     8:45 AM
-      │                          │                                │     Koramangala Branch
-      │                          │                                │
-      ▼                          ▼                                ▼
+      <div className="workflow-visual">
+        {/* Check-In Flow */}
+        <div className="workflow-step">
+          <div className="workflow-node employee">📱</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Employee Dials Toll-Free Number</div>
+            <div className="workflow-body-detail">Ravi picks up his basic feature phone and dials the regional toll-free number: ☎️ 1800-XXX-BLR</div>
+            <div className="workflow-body-meta">▸ Time: 8:45 AM · Channel: PSTN / Feature Phone</div>
+          </div>
+        </div>
 
-   ─── REMINDER FLOW (for employees who haven't checked in) ───
+        <div className="workflow-arrow">Incoming call routed to Voice LLM Engine</div>
 
-      │                          │  9:30 AM: Auto-outbound call   │
-      │◀─────────────────────────│  "Priya, aapne abhi tak        │
-      │                          │   attendance nahi di..."        │
-      │  "Sorry, ab kar rahi hoon"│                                │
-      │─────────────────────────▶│  Mark LATE at 9:35 AM ──────────▶│  ⚠️ Priya - LATE
-      │                          │                                │     9:35 AM
-      ▼                          ▼                                ▼
-      `}</div>
+        <div className="workflow-step">
+          <div className="workflow-node system">🤖</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Caller ID Lookup + LLM Greeting</div>
+            <div className="workflow-body-detail">"Namaste Ravi! Kya aap aaj Koramangala branch mein hain?"</div>
+            <div className="workflow-body-meta">▸ Caller ID matched: EMP-6202 · Language: Hindi</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Employee speaks naturally in response</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node employee">👤</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Employee Responds Verbally</div>
+            <div className="workflow-body-detail">"Haan, main Ravi hoon. Main yahan Koramangala mein hoon."</div>
+            <div className="workflow-body-meta">▸ Voice capture initiated for biometric verification</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Audio stream sent to Voice Biometric Engine</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node system">🔐</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Voice Biometric Verification</div>
+            <div className="workflow-body-detail">Comparing live voiceprint with enrolled sample from onboarding...</div>
+            <div className="workflow-body-meta">▸ ✅ Voice match: 94.2% confidence (threshold: 85%)</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Verification passed → Mark attendance</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node system">✅</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Attendance Marked + Confirmation</div>
+            <div className="workflow-body-detail">"Dhanyavaad Ravi! Aapki attendance 8:45 AM par mark ho gayi. Aapka din shubh ho!"</div>
+            <div className="workflow-body-meta">▸ Status: PRESENT · Time: 8:45 AM · Location: Koramangala</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Real-time webhook sent to HR Dashboard</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node dashboard">📊</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">HR Dashboard Updated in Real-Time</div>
+            <div className="workflow-body-detail">Ravi's attendance card turns green across all 100 locations on the live HR dashboard.</div>
+            <div className="workflow-body-meta">▸ ✅ Ravi - PRESENT - 8:45 AM - Koramangala Branch</div>
+          </div>
+        </div>
+
+        {/* Reminder Flow */}
+        <div className="workflow-divider">⚠️ Automated Reminder Flow (9:30 AM Cutoff)</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node warning">📵</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">9:30 AM: Employee Has Not Checked In</div>
+            <div className="workflow-body-detail">The system detects that Priya has not called in by the cutoff time.</div>
+            <div className="workflow-body-meta">▸ Trigger: Outbound reminder call via Hunar Voice AI</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Auto-outbound call placed to Priya's registered number</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node system">📞</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">LLM Makes Outbound Reminder Call</div>
+            <div className="workflow-body-detail">"Priya, aapne abhi tak attendance nahi di. Kya aap aaj duty par hain ya chhutti par?"</div>
+            <div className="workflow-body-meta">▸ Call connected · Waiting for response...</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Priya responds with natural language</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node employee">👤</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Employee Explains</div>
+            <div className="workflow-body-detail">"Sorry ma'am, traffic mein hoon. 10 minute mein pahunch rahi hoon."</div>
+            <div className="workflow-body-meta">▸ LLM categorizes: LATE_ARRIVING (ETA: 10 min)</div>
+          </div>
+        </div>
+
+        <div className="workflow-arrow">Status updated + supervisor notified</div>
+
+        <div className="workflow-step">
+          <div className="workflow-node dashboard">📊</div>
+          <div className="workflow-body">
+            <div className="workflow-body-title">Dashboard Updated: Late Arrival</div>
+            <div className="workflow-body-detail">Priya's status changes to LATE on the dashboard with ETA. Hub supervisor receives SMS alert.</div>
+            <div className="workflow-body-meta">▸ ⚠️ Priya - LATE - 9:35 AM - ETA: 9:45 AM</div>
+          </div>
+        </div>
+      </div>
 
       <h3>Fallback Channels</h3>
       <div style={{ overflowX: 'auto' }}>

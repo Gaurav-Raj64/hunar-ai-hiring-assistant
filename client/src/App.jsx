@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import './index.css'
+import HeroLanding from './components/HeroLanding'
 import Navbar from './components/Navbar'
 import SourcingView from './components/SourcingView'
 import VoiceCampaignView from './components/VoiceCampaignView'
 import DashboardView from './components/DashboardView'
 import WorkflowView from './components/WorkflowView'
 import AttendanceView from './components/AttendanceView'
+import LiveCallDemo from './components/LiveCallDemo'
 import SettingsModal from './components/SettingsModal'
 import api from './services/api'
 
@@ -14,13 +16,16 @@ const TABS = [
   { id: 'campaign', label: '📞 Voice AI Outreach', icon: '📞' },
   { id: 'dashboard', label: '📊 Recruiter Dashboard', icon: '📊' },
   { id: 'workflow', label: '⚡ Multi-Channel Workflows', icon: '⚡' },
+  { id: 'livedemo', label: '🔴 Live API Demo', icon: '🔴' },
   { id: 'attendance', label: '📋 Q3: Attendance System', icon: '📋' },
 ]
 
 function App() {
+  const [showHero, setShowHero] = useState(true)
   const [activeTab, setActiveTab] = useState('sourcing')
   const [apiStatus, setApiStatus] = useState({ live: false, mode: 'checking' })
   const [showSettings, setShowSettings] = useState(false)
+  const [tabTransition, setTabTransition] = useState(false)
 
   useEffect(() => {
     checkApiStatus()
@@ -37,12 +42,28 @@ function App() {
     }
   }
 
+  function handleTabChange(tabId) {
+    setTabTransition(true)
+    setTimeout(() => {
+      setActiveTab(tabId)
+      setTimeout(() => setTabTransition(false), 50)
+    }, 150)
+  }
+
+  function handleEnterDashboard() {
+    setShowHero(false)
+  }
+
+  if (showHero) {
+    return <HeroLanding onEnter={handleEnterDashboard} />
+  }
+
   return (
     <div className="app-container">
       <Navbar
         tabs={TABS}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         apiStatus={apiStatus}
         onSettings={() => setShowSettings(true)}
       />
@@ -53,20 +74,25 @@ function App() {
           <button
             key={tab.id}
             className={`navbar-tab ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      <main className="main-content">
+      <main className="main-content" style={{
+        opacity: tabTransition ? 0 : 1,
+        transform: tabTransition ? 'translateY(12px)' : 'translateY(0)',
+        transition: 'opacity 0.2s ease, transform 0.2s ease',
+      }}>
         {activeTab === 'sourcing' && (
-          <SourcingView onNavigateToCampaign={() => setActiveTab('campaign')} />
+          <SourcingView onNavigateToCampaign={() => handleTabChange('campaign')} />
         )}
         {activeTab === 'campaign' && <VoiceCampaignView />}
         {activeTab === 'dashboard' && <DashboardView />}
         {activeTab === 'workflow' && <WorkflowView />}
+        {activeTab === 'livedemo' && <LiveCallDemo />}
         {activeTab === 'attendance' && <AttendanceView />}
       </main>
 
