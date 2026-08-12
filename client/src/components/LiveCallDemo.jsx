@@ -42,7 +42,12 @@ export default function LiveCallDemo() {
         job_role: 'Senior Full Stack AI Engineer',
         company: 'Hunar AI',
         location: 'Bangalore',
-        salary_range: '₹18-25 LPA'
+        salary_range: '18-25 LPA'
+      },
+      guardrails: {
+        earliest_call_time: '00:00',
+        last_call_time: '23:59',
+        allowed_days: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
       }
     })
 
