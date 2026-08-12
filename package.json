@@ -1,0 +1,17 @@
+{
+  "name": "hunar-ai-hiring-assistant",
+  "version": "1.0.0",
+  "description": "Full-Stack AI Hiring Assistant & People Search using Hunar Voice AI",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start"
+  },
+  "author": "Gaurav Raj",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
