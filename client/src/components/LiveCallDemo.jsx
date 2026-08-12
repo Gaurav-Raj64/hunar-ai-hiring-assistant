@@ -59,6 +59,7 @@ export default function LiveCallDemo() {
       // Poll for status updates
       if (callId) {
         let pollCount = 0
+        let lastSeenStatus = 'INITIATED'
         const pollInterval = setInterval(async () => {
           pollCount++
           const statusRes = await api.getCall(callId)
@@ -66,7 +67,8 @@ export default function LiveCallDemo() {
             const call = statusRes.data
             const newStatus = call.status || call.lifecycle_status
 
-            if (newStatus !== liveStatus) {
+            if (newStatus && newStatus !== lastSeenStatus) {
+              lastSeenStatus = newStatus
               setLiveStatus(newStatus)
               setCallData(call)
               setStatusHistory(prev => [...prev, {
@@ -76,9 +78,16 @@ export default function LiveCallDemo() {
               }])
             }
 
-            if (['COMPLETED', 'NOT_CONNECTED', 'FAILED', 'CANCELLED'].includes(newStatus) || pollCount > 60) {
+            if (['COMPLETED', 'NOT_CONNECTED', 'FAILED', 'CANCELLED'].includes(newStatus) || pollCount > 40) {
               clearInterval(pollInterval)
-              setCallStatus(newStatus === 'COMPLETED' ? 'success' : 'error')
+              if (pollCount > 40) {
+                setStatusHistory(prev => [...prev, {
+                  time: new Date().toLocaleTimeString(),
+                  status: 'TIMEOUT',
+                  text: 'Polling timed out after 2 minutes. Check the Dashboard tab for final results.'
+                }])
+              }
+              setCallStatus(['COMPLETED'].includes(newStatus) ? 'success' : 'error')
             }
           }
         }, 3000)
@@ -97,6 +106,7 @@ export default function LiveCallDemo() {
 
   function getStatusText(status, call) {
     switch (status) {
+      case 'SCHEDULED': return 'Call is queued in Hunar telephony. Waiting for the dialer to place the call...'
       case 'INITIATED': return 'Call request accepted by Hunar telephony engine.'
       case 'RINGING': return `Phone is ringing at ${call.mobile_number}...`
       case 'IN_PROGRESS': return '🔴 Call connected! AI Agent is speaking with the candidate...'
@@ -104,6 +114,7 @@ export default function LiveCallDemo() {
       case 'NOT_CONNECTED': return '📵 Call was not answered. The retry engine will attempt again.'
       case 'FAILED': return '❌ Call failed due to a telephony error.'
       case 'CANCELLED': return '🚫 Call was cancelled.'
+      case 'TIMEOUT': return '⏰ Polling timed out. Check Dashboard for final results.'
       default: return `Status updated to: ${status}`
     }
   }
