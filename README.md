@@ -71,7 +71,7 @@ d:/Hunar ai/
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/hunar-ai-hiring-assistant.git
+git clone https://github.com/Gaurav-Raj64/hunar-ai-hiring-assistant.git
 cd "d:/Hunar ai"
 
 # Install all dependencies (root, server, and client)
